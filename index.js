@@ -22,7 +22,7 @@ if (twigAvailable) {
 		return i18n.__(text, domain);
 	});
 }
-
+var gloabalOptions;
 // define module
 var _this = {
 	defaultOptions: {
@@ -33,18 +33,18 @@ var _this = {
 	},
     init: function (options) {
 		// Get options
-		options = extend(_this.defaultOptions, options);
+		gloabalOptions = extend(_this.defaultOptions, options);
         // Configure i18n
-        i18n.configure(options);
-        i18n.setLocale(options.defaultLocale);
+        i18n.configure(gloabalOptions);
+        i18n.setLocale(gloabalOptions.defaultLocale);
         // Add-in i18n support
         keystone.pre('routes', i18n.init);
         // Locale switch endpoint
-        keystone.get('/' + options.endpoint.replace(/^\/|\/$/g, '') + '/:lang', _this.switchLocale);
+        keystone.get('/' + gloabalOptions.endpoint.replace(/^\/|\/$/g, '') + '/:lang', _this.switchLocale);
     },
     switchLocale: function (req, res) {
         i18n.setLocale(req.params.lang);
-        res.cookie('language', req.params.lang, { maxAge: 900000, httpOnly: true });
+        res.cookie(gloabalOptions.cookie, req.params.lang, { maxAge: 900000, httpOnly: true });
         res.redirect('back');
     }
 };
